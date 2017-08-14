@@ -13,7 +13,7 @@ work on other releases.
 * Magento 2.1.7 OK
 * Magento 2.2 RC: OK
 
-##Installation
+## Installation
 
 You can manually download the archive and put it in app/code/Enrico69
 or, the most simple way, install it via composer:
