@@ -1,6 +1,6 @@
 {
   "name": "enrico69/magento2-customer-activation",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "keywords": ["magento", "magento2", "account", "customer", "activation"],
   "type": "magento2-module",
   "description": "This module is designed for Magento 2.1.x. It add the possibility for the site owner to manually validate customer accounts at registration.",
