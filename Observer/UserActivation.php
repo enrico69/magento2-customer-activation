@@ -14,6 +14,7 @@ use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Framework\Message\ManagerInterface;
 use Enrico69\Magento2CustomerActivation\Setup\InstallData;
 use Psr\Log\LoggerInterface;
+use Enrico69\Magento2CustomerActivation\Model\AdminNotification;
 
 class UserActivation implements ObserverInterface
 {
@@ -38,22 +39,30 @@ class UserActivation implements ObserverInterface
     protected $messageManager;
 
     /**
+     * @var \Enrico69\Magento2CustomerActivation\Model\AdminNotification
+     */
+    protected $adminNotification;
+
+    /**
      * UserActivation constructor.
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository
      * @param \Magento\Framework\Message\ManagerInterface $messageManager
      * @param \Psr\Log\LoggerInterface $logger
+     * @param \Enrico69\Magento2CustomerActivation\Model\AdminNotification
      */
     public function __construct(
         ScopeConfigInterface $scopeConfig,
         CustomerRepositoryInterface $customerRepository,
         ManagerInterface $messageManager,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        AdminNotification $adminNotification
     ) {
         $this->scopeConfig = $scopeConfig;
         $this->customerRepository = $customerRepository;
         $this->messageManager = $messageManager;
         $this->logger = $logger;
+        $this->adminNotification = $adminNotification;
     }
 
     /**
@@ -71,6 +80,8 @@ class UserActivation implements ObserverInterface
             $newCustomer->setCustomAttribute(InstallData::CUSTOMER_ACCOUNT_ACTIVE, 0);
             $this->customerRepository->save($newCustomer);
             $this->messageManager->addNoticeMessage(__('Your account will be enabled by the site owner soon'));
+            
+            $this->adminNotification->send($newCustomer);
         }
     }
 }

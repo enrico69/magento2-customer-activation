@@ -12,7 +12,7 @@ use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\ScopeInterface;
 
-class ActivationEmail
+class AdminNotification
 {
     /**
      * @var \Magento\Framework\Mail\Template\TransportBuilder
@@ -46,14 +46,20 @@ class ActivationEmail
     }
 
     /**
-     * If an account is activated, send an email to the user to notice it
+     * Send an email to the site owner to notice it that
+     * a new customer has registered
      *
      * @param \Magento\Customer\Api\Data\CustomerInterface $customer
      * @throws \Magento\Framework\Exception\MailException
      */
     public function send($customer)
     {
-        $this->transportBuilder->setTemplateIdentifier('enrico69_activation_email')
+        $siteOwnerEmail = $this->scopeConfigInterface->getValue(
+            'trans_email/ident_sales/email',
+            ScopeInterface::SCOPE_WEBSITE
+        );
+
+        $this->transportBuilder->setTemplateIdentifier('enrico69_activation_email_notification')
             ->setTemplateOptions(
                 [
                     'area' => Area::AREA_FRONTEND,
@@ -62,17 +68,14 @@ class ActivationEmail
             )
             ->setTemplateVars(['email' => $customer->getEmail()]);
 
-        $this->transportBuilder->addTo($customer->getEmail());
+        $this->transportBuilder->addTo($siteOwnerEmail);
         $this->transportBuilder->setFrom(
             [
                 'name'=> $this->storeManagerInterface->getStore($customer->getStoreId())->getName(),
-                'email' => $this->scopeConfigInterface->getValue(
-                    'trans_email/ident_sales/email',
-                    ScopeInterface::SCOPE_WEBSITE
-                )
+                'email' => $siteOwnerEmail
             ]
         );
-
+        
         $this->transportBuilder->getTransport()->sendMessage();
     }
 }
