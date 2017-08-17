@@ -7,8 +7,16 @@
   "license": "MIT",
   "authors": [
     {
-      "name": "Eric COURTIAL <e.courtial30@gmail.com>",
-      "homepage": "https://github.com/enrico69/magento2-customer-activation"
+      "name": "Eric COURTIAL",
+      "email": "e.courtial30@gmail.com",
+      "homepage": "https://github.com/enrico69",
+      "role": "Developer"
+    },
+    {
+      "name": "Sebastian WAGNER",
+      "email": "sebastian.wagner@tritum.de",
+      "homepage": "https://github.com/sebastianwagner",
+      "role": "Developer"
     }
   ],
   "require": {
