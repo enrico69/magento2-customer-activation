@@ -42,7 +42,7 @@ class UserEdition implements ObserverInterface
     protected $messageManager;
 
     /**
-     * @var \Enrico69\CustomerActivation\Model\ActivationEmail
+     * @var \Enrico69\Magento2CustomerActivation\Model\ActivationEmail
      */
     protected $activationEmail;
 
@@ -57,7 +57,7 @@ class UserEdition implements ObserverInterface
      * @param \Psr\Log\LoggerInterface $logger
      * @param \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository
      * @param \Magento\Framework\Message\ManagerInterface $messageManager
-     * @param \Enrico69\CustomerActivation\Model\ActivationEmail $activationEmail
+     * @param ActivationEmail $activationEmail
      * @param \Magento\Framework\App\ResourceConnection $resourceConnection
      * @throws \DomainException
      */
