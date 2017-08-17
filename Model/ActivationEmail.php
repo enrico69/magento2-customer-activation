@@ -46,7 +46,7 @@ class ActivationEmail
     }
 
     /**
-     * If an account is created, send the credentials to the user
+     * If an account is activated, send an email to the user to notice it
      *
      * @param \Magento\Customer\Api\Data\CustomerInterface $customer
      * @throws \Magento\Framework\Exception\MailException
