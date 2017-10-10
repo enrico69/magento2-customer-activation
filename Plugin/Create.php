@@ -74,7 +74,9 @@ class Create
      */
     public function afterExecute(CreatePost $subject, $result)
     {
-        if ($this->scopeConfig->getValue('customer/create_account/customer_account_activation', ScopeInterface::SCOPE_STORE)) {
+        if ($this->scopeConfig->getValue('customer/create_account/customer_account_activation', ScopeInterface::SCOPE_STORE)
+            && $this->customerSession->getRegisterSuccess()
+        ) {
             $lastCustomerId = $this->customerSession->getCustomerId();
             $this->customerSession->logout()->setBeforeAuthUrl($this->redirect->getRefererUrl())
                 ->setLastCustomerId($lastCustomerId);

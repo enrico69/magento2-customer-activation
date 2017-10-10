@@ -15,6 +15,7 @@ use Magento\Framework\Message\ManagerInterface;
 use Enrico69\Magento2CustomerActivation\Setup\InstallData;
 use Psr\Log\LoggerInterface;
 use Enrico69\Magento2CustomerActivation\Model\AdminNotification;
+use Magento\Customer\Model\Session;
 
 class UserActivation implements ObserverInterface
 {
@@ -44,25 +45,33 @@ class UserActivation implements ObserverInterface
     protected $adminNotification;
 
     /**
+     * @var \Magento\Customer\Model\Session
+     */
+    protected $customerSession;
+
+    /**
      * UserActivation constructor.
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository
      * @param \Magento\Framework\Message\ManagerInterface $messageManager
      * @param \Psr\Log\LoggerInterface $logger
-     * @param \Enrico69\Magento2CustomerActivation\Model\AdminNotification
+     * @param \Enrico69\Magento2CustomerActivation\Model\AdminNotification $adminNotification
+     * @param \Magento\Customer\Model\Session $customerSession
      */
     public function __construct(
         ScopeConfigInterface $scopeConfig,
         CustomerRepositoryInterface $customerRepository,
         ManagerInterface $messageManager,
         LoggerInterface $logger,
-        AdminNotification $adminNotification
+        AdminNotification $adminNotification,
+        Session $customerSession
     ) {
         $this->scopeConfig = $scopeConfig;
         $this->customerRepository = $customerRepository;
         $this->messageManager = $messageManager;
         $this->logger = $logger;
         $this->adminNotification = $adminNotification;
+        $this->customerSession = $customerSession;
     }
 
     /**
@@ -71,6 +80,7 @@ class UserActivation implements ObserverInterface
      * @throws \Magento\Framework\Exception\LocalizedException
      * @throws \Magento\Framework\Exception\State\InputMismatchException
      * @throws \Magento\Framework\Exception\NoSuchEntityException
+     * @throws \Magento\Framework\Exception\MailException
      */
     public function execute(EventObserver $observer)
     {
@@ -80,7 +90,7 @@ class UserActivation implements ObserverInterface
             $newCustomer->setCustomAttribute(InstallData::CUSTOMER_ACCOUNT_ACTIVE, 0);
             $this->customerRepository->save($newCustomer);
             $this->messageManager->addNoticeMessage(__('Your account will be enabled by the site owner soon'));
-            
+            $this->customerSession->setRegisterSuccess(true);
             $this->adminNotification->send($newCustomer);
         }
     }

@@ -10,8 +10,9 @@ This module has been developed on a Magento 2.1.7 instance, but there is not app
 work on other releases.
 
 * Magento 2.1.6 and above: not tested
-* Magento 2.1.7 OK
-* Magento 2.2 RC: OK
+* Magento 2.1.7 EE OK
+* Magento 2.1.8 CE OK
+* Magento 2.2 CE RC: OK
 
 ## Installation
 
@@ -25,6 +26,7 @@ composer require enrico69/magento2-customer-activation
 Whatever the way you choosed, then run the following command:
 
 ```
+php magento indexer:reindex
 php magento cache:clean
 ```
 
