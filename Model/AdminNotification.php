@@ -56,7 +56,7 @@ class AdminNotification
     {
         $siteOwnerEmail = $this->scopeConfigInterface->getValue(
             'trans_email/ident_sales/email',
-            ScopeInterface::SCOPE_WEBSITE
+            ScopeInterface::SCOPE_STORE
         );
 
         $this->transportBuilder->setTemplateIdentifier('enrico69_activation_email_notification')
