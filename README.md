@@ -9,7 +9,7 @@ Such feature could be required, for instance, in situation of B to B sales or pr
 This module has been developed on a Magento 2.1.7 instance, but there is not apparent reason it wouldn't
 work on other releases.
 
-* Magento 2.1.6 and above: not tested
+* Magento 2.1.6 and before: not tested
 * Magento 2.1.7 EE OK
 * Magento 2.1.8 CE OK
 * Magento 2.2 CE OK
