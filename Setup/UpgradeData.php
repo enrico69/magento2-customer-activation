@@ -50,6 +50,10 @@ class UpgradeData implements UpgradeDataInterface
             $this->upgradeToOneOneZero($setup);
         }
 
+        if (version_compare($context->getVersion(), '1.2.1') < 0) {
+            $this->upgradeToOneTwoOne($setup);
+        }
+
         $setup->endSetup();
     }
 
@@ -74,6 +78,19 @@ class UpgradeData implements UpgradeDataInterface
             'attribute_group_id' => $attributeGroupId,
             'used_in_forms' => ['adminhtml_customer'],
         ]);
+
+        $newAttribute->save();
+    }
+
+    /**
+     * @param \Magento\Framework\Setup\ModuleDataSetupInterface $setup
+     */
+    protected function upgradeToOneTwoOne($setup)
+    {
+        /** @var CustomerSetup $customerSetup */
+        $customerSetup = $this->customerSetupFactory->create(['setup' => $setup]);
+        $newAttribute = $customerSetup->getEavConfig()->getAttribute(Customer::ENTITY, InstallData::CUSTOMER_ACCOUNT_ACTIVE);
+        $newAttribute->setData('is_user_defined', 0);
 
         $newAttribute->save();
     }

@@ -12,18 +12,17 @@ work on other releases.
 * Magento 2.1.6 and above: not tested
 * Magento 2.1.7 EE OK
 * Magento 2.1.8 CE OK
-* Magento 2.2 CE RC: OK
+* Magento 2.2 CE OK
 
 ## Installation
 
-You can manually download the archive and put it in app/code/Enrico69
-or, the most simple way, install it via composer:
+You can manually download the archive and put its content in the _app/code/Enrico69/Magento2CustomerActivation_ directory or, the most simple (and recommended) way, install it via composer:
 
 ```
 composer require enrico69/magento2-customer-activation
 ```
 
-Whatever the way you choosed, then run the following command:
+Whatever the way you choosed, activate the module and then run the following command:
 
 ```
 php magento indexer:reindex
