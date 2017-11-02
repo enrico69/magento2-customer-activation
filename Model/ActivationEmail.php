@@ -53,7 +53,17 @@ class ActivationEmail
      */
     public function send($customer)
     {
-        $this->transportBuilder->setTemplateIdentifier('enrico69_activation_email')
+        $emailTemplate = $this->scopeConfigInterface->getValue(
+            'customer/create_account/customer_account_activation_confirmation_template',
+            ScopeInterface::SCOPE_STORE,
+            $customer->getStoreId()
+        );
+
+        if (!$emailTemplate) {
+            $emailTemplate = 'enrico69_activation_email';
+        }
+
+        $this->transportBuilder->setTemplateIdentifier($emailTemplate)
             ->setTemplateOptions(
                 [
                     'area' => Area::AREA_FRONTEND,
@@ -68,7 +78,7 @@ class ActivationEmail
                 'name'=> $this->storeManagerInterface->getStore($customer->getStoreId())->getName(),
                 'email' => $this->scopeConfigInterface->getValue(
                     'trans_email/ident_sales/email',
-                    ScopeInterface::SCOPE_WEBSITE
+                    ScopeInterface::SCOPE_STORE
                 )
             ]
         );

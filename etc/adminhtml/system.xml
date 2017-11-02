@@ -15,6 +15,10 @@
                     <label>Customer accounts need to be activated by an admin user</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
+                <field id="customer_account_activation_confirmation_template" translate="label comment" type="select" sortOrder="140" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Account activated confirmation email template</label>
+                    <source_model>Enrico69\Magento2CustomerActivation\Model\EmailTemplateList</source_model>
+                </field>
             </group>
         </section>
     </system>
