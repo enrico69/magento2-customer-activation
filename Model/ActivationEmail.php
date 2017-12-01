@@ -67,7 +67,7 @@ class ActivationEmail
             ->setTemplateOptions(
                 [
                     'area' => Area::AREA_FRONTEND,
-                    'store' => Store::DEFAULT_STORE_ID,
+                    'store' => $customer->getStoreId(),
                 ]
             )
             ->setTemplateVars(['email' => $customer->getEmail()]);
