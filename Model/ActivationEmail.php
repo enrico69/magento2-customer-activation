@@ -78,7 +78,8 @@ class ActivationEmail
                 'name'=> $this->storeManagerInterface->getStore($customer->getStoreId())->getName(),
                 'email' => $this->scopeConfigInterface->getValue(
                     'trans_email/ident_sales/email',
-                    ScopeInterface::SCOPE_STORE
+                    ScopeInterface::SCOPE_STORE,
+                    $customer->getStoreId()
                 )
             ]
         );
