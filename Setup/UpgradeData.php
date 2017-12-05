@@ -54,6 +54,10 @@ class UpgradeData implements UpgradeDataInterface
             $this->upgradeToOneTwoOne($setup);
         }
 
+        if (version_compare($context->getVersion(), '1.4.0') < 0) {
+            $this->upgradeToOneFourZero($setup);
+        }
+
         $setup->endSetup();
     }
 
@@ -91,6 +95,21 @@ class UpgradeData implements UpgradeDataInterface
         $customerSetup = $this->customerSetupFactory->create(['setup' => $setup]);
         $newAttribute = $customerSetup->getEavConfig()->getAttribute(Customer::ENTITY, InstallData::CUSTOMER_ACCOUNT_ACTIVE);
         $newAttribute->setData('is_user_defined', 0);
+
+        $newAttribute->save();
+    }
+
+    /**
+     * @param \Magento\Framework\Setup\ModuleDataSetupInterface $setup
+     */
+    protected function upgradeToOneFourZero($setup)
+    {
+        /** @var CustomerSetup $customerSetup */
+        $customerSetup = $this->customerSetupFactory->create(['setup' => $setup]);
+        $newAttribute = $customerSetup->getEavConfig()->getAttribute(Customer::ENTITY, InstallData::CUSTOMER_ACCOUNT_ACTIVE);
+        $newAttribute->setData('is_used_in_grid', 1);
+        $newAttribute->setData('is_visible_in_grid', 1);
+        $newAttribute->setData('is_filterable_in_grid', 1);
 
         $newAttribute->save();
     }
