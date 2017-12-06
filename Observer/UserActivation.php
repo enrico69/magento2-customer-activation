@@ -16,6 +16,7 @@ use Enrico69\Magento2CustomerActivation\Setup\InstallData;
 use Psr\Log\LoggerInterface;
 use Enrico69\Magento2CustomerActivation\Model\AdminNotification;
 use Magento\Customer\Model\Session;
+use Magento\Customer\Api\AccountManagementInterface;
 
 class UserActivation implements ObserverInterface
 {
@@ -50,6 +51,11 @@ class UserActivation implements ObserverInterface
     protected $customerSession;
 
     /**
+     * @var AccountManagementInterface
+     */
+    protected $accountManagement;
+
+    /**
      * UserActivation constructor.
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository
@@ -57,6 +63,7 @@ class UserActivation implements ObserverInterface
      * @param \Psr\Log\LoggerInterface $logger
      * @param \Enrico69\Magento2CustomerActivation\Model\AdminNotification $adminNotification
      * @param \Magento\Customer\Model\Session $customerSession
+     * @param AccountManagementInterface $accountManagement
      */
     public function __construct(
         ScopeConfigInterface $scopeConfig,
@@ -64,7 +71,8 @@ class UserActivation implements ObserverInterface
         ManagerInterface $messageManager,
         LoggerInterface $logger,
         AdminNotification $adminNotification,
-        Session $customerSession
+        Session $customerSession,
+        AccountManagementInterface $accountManagement
     ) {
         $this->scopeConfig = $scopeConfig;
         $this->customerRepository = $customerRepository;
@@ -72,6 +80,7 @@ class UserActivation implements ObserverInterface
         $this->logger = $logger;
         $this->adminNotification = $adminNotification;
         $this->customerSession = $customerSession;
+        $this->accountManagement = $accountManagement;
     }
 
     /**
@@ -91,7 +100,11 @@ class UserActivation implements ObserverInterface
             $this->customerRepository->save($newCustomer);
             $this->messageManager->addNoticeMessage(__('Your account will be enabled by the site owner soon'));
             $this->customerSession->setRegisterSuccess(true);
-            $this->adminNotification->send($newCustomer);
+
+            $confirmationStatus = $this->accountManagement->getConfirmationStatus($newCustomer->getId());
+            if ($confirmationStatus !== AccountManagementInterface::ACCOUNT_CONFIRMATION_REQUIRED) {
+                $this->adminNotification->send($newCustomer);
+            }
         }
     }
 }

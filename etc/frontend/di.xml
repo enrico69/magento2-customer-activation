@@ -12,4 +12,7 @@
     <type name="Magento\Customer\Controller\Account\LoginPost">
         <plugin name="Enrico69_LoginPost" type="Enrico69\Magento2CustomerActivation\Plugin\Connect" sortOrder="1"  />
     </type>
+    <type name="Magento\Customer\Controller\Account\Confirm">
+        <plugin name="Enrico69_Confirm" type="Enrico69\Magento2CustomerActivation\Plugin\Confirm" sortOrder="1"  />
+    </type>
 </config>
