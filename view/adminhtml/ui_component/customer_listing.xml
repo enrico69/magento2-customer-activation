@@ -6,6 +6,7 @@
  */
 -->
 <listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <listingToolbar name="listing_top"/>
     <columns name="customer_columns" class="Magento\Customer\Ui\Component\Listing\Columns">
         <column name="account_is_active" class="Enrico69\Magento2CustomerActivation\Ui\Component\Listing\Column\Activation">
             <argument name="data" xsi:type="array">
