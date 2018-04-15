@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+<!--
+/**
+ * @author Eric COURTIAL <e.courtial30@gmail.com>
+ */
+-->
 <config xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
         xsi:noNamespaceSchemaLocation='urn:magento:framework/Event/etc/events.xsd'>
     <event name="customer_register_success">
