@@ -18,6 +18,7 @@ use Enrico69\Magento2CustomerActivation\Model\ActivationEmail;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\MailException;
+use Enrico69\Magento2CustomerActivation\Model\Attribute\Active;
 
 class UserEdition implements ObserverInterface
 {
@@ -52,14 +53,19 @@ class UserEdition implements ObserverInterface
     protected $connexion;
 
     /**
+     * @var Active
+     */
+    protected $activeAttribute;
+
+    /**
      * UserEdition constructor.
-     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
-     * @param \Psr\Log\LoggerInterface $logger
-     * @param \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository
-     * @param \Magento\Framework\Message\ManagerInterface $messageManager
+     * @param ScopeConfigInterface $scopeConfig
+     * @param LoggerInterface $logger
+     * @param CustomerRepositoryInterface $customerRepository
+     * @param ManagerInterface $messageManager
      * @param ActivationEmail $activationEmail
-     * @param \Magento\Framework\App\ResourceConnection $resourceConnection
-     * @throws \DomainException
+     * @param ResourceConnection $resourceConnection
+     * @param Active $activeAttribute
      */
     public function __construct(
         ScopeConfigInterface $scopeConfig,
@@ -67,7 +73,8 @@ class UserEdition implements ObserverInterface
         CustomerRepositoryInterface $customerRepository,
         ManagerInterface $messageManager,
         ActivationEmail $activationEmail,
-        ResourceConnection $resourceConnection
+        ResourceConnection $resourceConnection,
+        Active $activeAttribute
     ) {
         $this->scopeConfig = $scopeConfig;
         $this->logger = $logger;
@@ -75,15 +82,11 @@ class UserEdition implements ObserverInterface
         $this->messageManager = $messageManager;
         $this->activationEmail = $activationEmail;
         $this->connexion = $resourceConnection->getConnection();
+        $this->activeAttribute = $activeAttribute;
     }
 
     /**
-     * @param \Magento\Framework\Event\Observer $observer
-     * @throws \Magento\Framework\Exception\InputException
-     * @throws \Magento\Framework\Exception\LocalizedException
-     * @throws \Magento\Framework\Exception\State\InputMismatchException
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
-     * @throws \RuntimeException
+     * @param EventObserver $observer
      */
     public function execute(EventObserver $observer)
     {
@@ -96,7 +99,7 @@ class UserEdition implements ObserverInterface
                 ScopeInterface::SCOPE_STORE,
                 $customer->getStoreId())
             && $customer->getCustomAttribute(InstallData::CUSTOMER_ACTIVATION_EMAIL_SENT)->getValue() !== '1'
-            && $customer->getCustomAttribute(InstallData::CUSTOMER_ACCOUNT_ACTIVE)->getValue() === '1'
+            && $this->activeAttribute->isCustomerActive($customer)
         ) {
             $this->manageUserActivationEmail($customer);
         }

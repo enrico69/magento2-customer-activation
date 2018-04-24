@@ -12,13 +12,13 @@ use Magento\Framework\Controller\Result\RedirectFactory;
 use Magento\Framework\App\Response\RedirectInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\ScopeInterface;
-use Enrico69\Magento2CustomerActivation\Setup\InstallData;
 use Psr\Log\LoggerInterface;
 use Magento\Customer\Model\Session;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Enrico69\Magento2CustomerActivation\Model\AdminNotification;
+use Enrico69\Magento2CustomerActivation\Model\Attribute\Active;
 
 class Confirm
 {
@@ -63,15 +63,21 @@ class Confirm
     protected $adminNotification;
 
     /**
-     * Connect constructor.
-     * @param \Magento\Framework\Controller\Result\RedirectFactory $redirectFactory
-     * @param \Magento\Framework\App\Response\RedirectInterface $redirectInterface
-     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
-     * @param \Psr\Log\LoggerInterface $logger
-     * @param \Magento\Customer\Model\Session $customerSession
-     * @param \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository
-     * @param \Magento\Framework\Message\ManagerInterface $messageManager
-     * @param \Enrico69\Magento2CustomerActivation\Model\AdminNotification $adminNotification
+     * @var Active
+     */
+    protected $activeAttribute;
+
+    /**
+     * Confirm constructor.
+     * @param RedirectFactory $redirectFactory
+     * @param RedirectInterface $redirectInterface
+     * @param ScopeConfigInterface $scopeConfig
+     * @param LoggerInterface $logger
+     * @param Session $customerSession
+     * @param CustomerRepositoryInterface $customerRepository
+     * @param ManagerInterface $messageManager
+     * @param AdminNotification $adminNotification
+     * @param Active $activeAttribute
      */
     public function __construct(
         RedirectFactory $redirectFactory,
@@ -81,7 +87,8 @@ class Confirm
         Session $customerSession,
         CustomerRepositoryInterface $customerRepository,
         ManagerInterface $messageManager,
-        AdminNotification $adminNotification
+        AdminNotification $adminNotification,
+        Active $activeAttribute
     ) {
         $this->resultRedirectFactory = $redirectFactory;
         $this->redirect = $redirectInterface;
@@ -91,13 +98,15 @@ class Confirm
         $this->customerRepository = $customerRepository;
         $this->messageManager = $messageManager;
         $this->adminNotification = $adminNotification;
+        $this->activeAttribute = $activeAttribute;
     }
 
     /**
-     * @param \Enrico69\Magento2CustomerActivation\Plugin\Confirm $subject
+     * @param TargetClass $subject
      * @param $result
      * @return \Magento\Framework\Controller\Result\Redirect
      * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws \Magento\Framework\Exception\MailException
      */
     public function afterExecute(TargetClass $subject, $result)
     {
@@ -107,7 +116,7 @@ class Confirm
             try {
                 $customer = $this->customerRepository->getById($this->customerSession->getCustomerId());
 
-                if ($customer->getCustomAttribute(InstallData::CUSTOMER_ACCOUNT_ACTIVE)->getValue() !== '1') {
+                if (!$this->activeAttribute->isCustomerActive($customer)) {
                     $lastCustomerId = $this->customerSession->getCustomerId();
                     $this->customerSession->logout()->setBeforeAuthUrl($this->redirect->getRefererUrl())
                         ->setLastCustomerId($lastCustomerId);

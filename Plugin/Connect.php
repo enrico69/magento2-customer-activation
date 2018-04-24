@@ -15,12 +15,12 @@ use Magento\Framework\Controller\Result\RedirectFactory;
 use Magento\Framework\App\Response\RedirectInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\ScopeInterface;
-use Enrico69\Magento2CustomerActivation\Setup\InstallData;
 use Psr\Log\LoggerInterface;
 use Magento\Customer\Model\Session;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Enrico69\Magento2CustomerActivation\Model\Attribute\Active;
 
 class Connect
 {
@@ -60,14 +60,20 @@ class Connect
     protected $messageManager;
 
     /**
+     * @var Active
+     */
+    protected $activeAttribute;
+
+    /**
      * Connect constructor.
-     * @param \Magento\Framework\Controller\Result\RedirectFactory $redirectFactory
-     * @param \Magento\Framework\App\Response\RedirectInterface $redirectInterface
-     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
-     * @param \Psr\Log\LoggerInterface $logger
-     * @param \Magento\Customer\Model\Session $customerSession
-     * @param \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository
-     * @param \Magento\Framework\Message\ManagerInterface $messageManager
+     * @param RedirectFactory $redirectFactory
+     * @param RedirectInterface $redirectInterface
+     * @param ScopeConfigInterface $scopeConfig
+     * @param LoggerInterface $logger
+     * @param Session $customerSession
+     * @param CustomerRepositoryInterface $customerRepository
+     * @param ManagerInterface $messageManager
+     * @param Active $activeAttribute
      */
     public function __construct(
         RedirectFactory $redirectFactory,
@@ -76,7 +82,8 @@ class Connect
         LoggerInterface $logger,
         Session $customerSession,
         CustomerRepositoryInterface $customerRepository,
-        ManagerInterface $messageManager
+        ManagerInterface $messageManager,
+        Active $activeAttribute
     ) {
         $this->resultRedirectFactory = $redirectFactory;
         $this->redirect = $redirectInterface;
@@ -85,6 +92,7 @@ class Connect
         $this->customerSession = $customerSession;
         $this->customerRepository = $customerRepository;
         $this->messageManager = $messageManager;
+        $this->activeAttribute = $activeAttribute;
     }
 
     /**
@@ -99,7 +107,7 @@ class Connect
             try {
                 $customer = $this->customerRepository->getById($this->customerSession->getCustomerId());
 
-                if ($customer->getCustomAttribute(InstallData::CUSTOMER_ACCOUNT_ACTIVE)->getValue() !== '1') {
+                if (!$this->activeAttribute->isCustomerActive($customer)) {
                     $lastCustomerId = $this->customerSession->getCustomerId();
                     $this->customerSession->logout()->setBeforeAuthUrl($this->redirect->getRefererUrl())
                         ->setLastCustomerId($lastCustomerId);
