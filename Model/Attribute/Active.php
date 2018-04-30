@@ -17,9 +17,9 @@ class Active
     public function isCustomerActive($customer)
     {
         $attribute = $customer->getCustomAttribute(InstallData::CUSTOMER_ACCOUNT_ACTIVE);
-        if ($attribute !== null) {
+        if ($attribute !== null) { // After the installation of the module
             $status = $attribute->getValue() === '1' ? true:false;
-        } else {
+        } else { // Before the installation of the module
             $status = true;
         }
 

@@ -18,7 +18,20 @@ class Activation extends Column
     {
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as &$item) {
-                $item['account_is_active'] = $item['account_is_active'] === '1' ? __('Yes') : __('No');
+                if (!array_key_exists('account_is_active', $item)) {
+                    // Before the installation of the module
+                    $item['account_is_active'] = 'Need to reindex';
+                    continue;
+                }
+
+                // After the installation of the module
+                if ($item['account_is_active'] === '1') {
+                    $item['account_is_active'] = __('Yes');
+                } elseif ($item['account_is_active'] === null) {
+                    $item['account_is_active'] = __('Yes (by default)');
+                } else {
+                    $item['account_is_active'] = __('No');
+                }
             }
         }
 
