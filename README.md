@@ -3,6 +3,7 @@
 ## Status
 
 Last version : 1.4.2 : compatibility for MG2.2.x + bug fixes
+
 Do not use: 1.4.1
 
 
