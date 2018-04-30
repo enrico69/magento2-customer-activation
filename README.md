@@ -1,9 +1,10 @@
 # Magento 2 Customer Account Validation
 
 ## Status
-![Stable version](http://www.dynamic-mess.com/Media/Images/stable.jpg)
 
-![Unstable version](http://www.dynamic-mess.com/Media/Images/unstable.jpg)
+Last version : 1.4.2 : compatibility for MG2.2.x + bug fixes
+Do not use: 1.4.1
+
 
 ## Description
 This module is designed to add the possibility for the site owner to manually validate customer accounts at registration.
