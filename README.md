@@ -12,10 +12,6 @@ This module is designed to add the possibility for the site owner to manually va
 
 Such feature could be required, for instance, in situation of B to B sales or private sales.
 
-
-This module has been developed on a Magento 2.1.7 instance, but there is not apparent reason it wouldn't
-work on other releases.
-
 * Magento 2.1.6 and before: not tested
 * Magento 2.1.7 EE OK
 * Magento 2.1.8 CE OK
@@ -32,6 +28,7 @@ composer require enrico69/magento2-customer-activation
 Whatever the way you choosed, activate the module and then run the following command:
 
 ```
+php magento setup:upgrade
 php magento indexer:reindex
 php magento cache:clean
 ```
