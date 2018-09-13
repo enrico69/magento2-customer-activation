@@ -1,3 +1,7 @@
+# NO LONGER SUPPORTED
+# PACKAGE IS ABANDONNED
+
+
 # Magento 2 Customer Account Validation
 
 ## Status
