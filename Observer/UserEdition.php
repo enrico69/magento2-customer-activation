@@ -92,13 +92,15 @@ class UserEdition implements ObserverInterface
     {
         $customer = $observer->getEvent()->getCustomer();
         /** @var \Magento\Customer\Api\Data\CustomerInterface $customer */
-
+        
+        $email_configmation = (method_exists($customer->getCustomAttribute(InstallData::CUSTOMER_ACTIVATION_EMAIL_SENT),'getValue')? $customer->getCustomAttribute(InstallData::CUSTOMER_ACTIVATION_EMAIL_SENT)->getValue() :  null) ;
+        
         // At customer account update (in adminhtml), if the account is active
         // but the email has not been sent: send it to the customer to notice it
         if ($this->scopeConfig->getValue('customer/create_account/customer_account_activation',
                 ScopeInterface::SCOPE_STORE,
                 $customer->getStoreId())
-            && $customer->getCustomAttribute(InstallData::CUSTOMER_ACTIVATION_EMAIL_SENT)->getValue() !== '1'
+            && $email_configmation !== '1'
             && $this->activeAttribute->isCustomerActive($customer)
         ) {
             $this->manageUserActivationEmail($customer);
